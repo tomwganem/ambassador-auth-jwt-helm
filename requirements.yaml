@@ -1,0 +1,4 @@
+dependencies:
+  - name: saas-web
+    version: ~2.1
+    repository: https://devops.gitlab.aspera.us/charts

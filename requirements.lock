@@ -1,0 +1,6 @@
+dependencies:
+- name: saas-web
+  repository: https://devops.gitlab.aspera.us/charts
+  version: 2.1.0
+digest: sha256:441cbb80d52d06bb8410ac0db6b7cb0484d8f32968289cdeef956c6f7b0d8f23
+generated: 2019-03-07T13:22:24.697973705-08:00

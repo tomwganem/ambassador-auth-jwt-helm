@@ -1,0 +1,62 @@
+#
+# Helm ambassador-jwt-auth saas-web deployment values
+#
+---
+saas-web:
+  name: &name ambassador-jwt-auth
+
+  labels:
+    tier: infra
+    feature: ambassador
+    app: *name
+
+  replicaCount: 5
+
+  image:
+    repository: ahab.asperasoft.com/opensource/ambassador-jwt-auth
+    tag: &tag qa-latest
+    pullPolicy: IfNotPresent
+    pullSecret: ahab.asperasoft.com
+
+  configEnv:
+    SENTRY_CURRENT_ENV:
+      sentry-config: current_environment
+    SENTRY_DSN:
+      sentry-config: *name
+
+  configRef:
+    - ambassador-jwt-auth-env
+
+  configVar:
+    SENTRY_RELEASE: *tag
+
+  ports:
+    - containerPort: &port 3000
+      protocol: TCP
+
+  livenessProbe: &probe
+    tcpSocket:
+      port: *port
+    initialDelaySeconds: 10
+    periodSeconds: 15
+    timeoutSeconds: 3
+
+  readinessProbe: *probe
+
+  service:
+    enabled: true
+    type: ClusterIP
+    ports:
+      - port: 80
+        targetPort: *port
+        protocol: TCP
+    annotations:
+      getambassador.io/config: |
+        ---
+        apiVersion: ambassador/v1
+        kind: AuthService
+        name: authentication
+        auth_service: "ambassador-jwt-auth"
+        path_prefix:  "/auth"
+        proto: http
+        allow_request_body: false
