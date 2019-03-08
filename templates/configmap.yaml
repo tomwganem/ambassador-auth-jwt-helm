@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   metadata:
-  name: {{ template "ambassador-jwt-auth.name" . }}
+  name: {{ template "ambassador-jwt-auth.fullname" . }}
   labels:
     app: {{ template "ambassador-jwt-auth.name" . }}
     chart: {{ template "ambassador-jwt-auth.chart" . }}

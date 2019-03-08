@@ -1,0 +1,36 @@
+{{- if .Values.service.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "ambassador-jwt-auth.fullname" . }}
+  labels:
+    app: {{ template "ambassador-jwt-auth.name" . }}
+    chart: {{ template "ambassador-jwt-auth.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    {{- range $key, $value := .Values.service.labels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+  annotations:
+    getambassador.io/config: |
+        ---
+        apiVersion: ambassador/v1
+        kind: AuthService
+        name: authentication
+        auth_service: {{ template "ambassador-jwt-auth.fullname" . }}
+        {{- range $key, $value := .Values.service.config }}
+        {{ $key }}: {{ $value }}
+        {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+  selector:
+    app: {{ template "ambassador-jwt-auth.name" . }}
+    release: {{ .Release.Name }}
+    {{- if or .Values.blueGreen }}
+    bluegreen: {{ required "activeBlueGreen required when using blue/green labels" .Values.activeBlueGreen }}
+    {{- end }}
+{{- end }}

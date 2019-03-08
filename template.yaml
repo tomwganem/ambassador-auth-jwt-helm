@@ -5,7 +5,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   metadata:
-  name: ambassador-jwt-auth
+  name: RELEASE-NAME-ambassador-jwt-auth
   labels:
     app: ambassador-jwt-auth
     chart: ambassador-jwt-auth-0.1.0
@@ -15,11 +15,11 @@ data:
   SENTRY_CURRENT_ENV: "dev"
   SENTRY_DSN: ""
   JWT_ISSUER: ""
-  JWT_OUTBOUND_HEADER: "session_token"
+  JWT_OUTBOUND_HEADER: "x-session-token"
   CHECK_EXP: "true"
 
 ---
-# Source: ambassador-jwt-auth/charts/saas-web/templates/service.yaml
+# Source: ambassador-jwt-auth/templates/service.yaml
 
 apiVersion: v1
 kind: Service
@@ -27,25 +27,28 @@ metadata:
   name: RELEASE-NAME-ambassador-jwt-auth
   labels:
     app: ambassador-jwt-auth
-    chart: saas-web-2.1.0
+    chart: ambassador-jwt-auth-0.1.0
     release: RELEASE-NAME
     heritage: Tiller
   annotations:
-    getambassador.io/config: "---\napiVersion: ambassador/v1\nkind: AuthService\nname: authentication\nauth_service: \"ambassador-jwt-auth\"\npath_prefix:  \"/auth\"\nproto: http\nallow_request_body: false\n"
+    getambassador.io/config: |
+        ---
+        apiVersion: ambassador/v1
+        kind: AuthService
+        name: authentication
+        auth_service: RELEASE-NAME-ambassador-jwt-auth
 spec:
   type: ClusterIP
   ports:
-    - port: 80
-      protocol: TCP
-      targetPort: 3000
-    
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
   selector:
     app: ambassador-jwt-auth
     release: RELEASE-NAME
 
 ---
-# Source: ambassador-jwt-auth/charts/saas-web/templates/deployment.yaml
-
+# Source: ambassador-jwt-auth/templates/deployment.yaml
 ---
 apiVersion: apps/v1beta2
 kind: Deployment
@@ -53,10 +56,9 @@ metadata:
   name: RELEASE-NAME-ambassador-jwt-auth
   labels:
     app: ambassador-jwt-auth
-    chart: saas-web-2.1.0
+    chart: ambassador-jwt-auth-0.1.0
     release: RELEASE-NAME
     heritage: Tiller
-    "app": "ambassador-jwt-auth"
     "feature": "ambassador"
     "tier": "infra"
 spec:
@@ -73,86 +75,28 @@ spec:
     spec:
       containers:
       - name: RELEASE-NAME
-        image: "ahab.asperasoft.com/opensource/ambassador-jwt-auth:qa-latest"
+        image: "tomwganem/ambassador-jwt-auth:0.2.0"
         imagePullPolicy: IfNotPresent
         ports:
-        - name: 3000-tcp
-          containerPort: 3000
+        - containerPort: 3000
           protocol: TCP
         envFrom:
         - configMapRef:
-            name: ambassador-jwt-auth
+            name: RELEASE-NAME-ambassador-jwt-auth
         livenessProbe:
-          initialDelaySeconds: 10
-          periodSeconds: 15
           tcpSocket:
             port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 15
           timeoutSeconds: 3
-          
         readinessProbe:
-          initialDelaySeconds: 10
-          periodSeconds: 15
           tcpSocket:
             port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 15
           timeoutSeconds: 3
-          
+
         resources:
           {}
           
-      imagePullSecrets:
-      - name: ahab.asperasoft.com
-
----
-# Source: ambassador-jwt-auth/charts/saas-job/templates/job.yaml
-
-
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: saas-job-59ruo
-  labels:
-    app: saas-job
-    chart: saas-job-1.0.0
-    release: RELEASE-NAME
-    heritage: Tiller
-spec:
-  template:
-    metadata:
-      labels:
-        app: saas-job
-        release: RELEASE-NAME
-    spec:
-      containers:
-      - name: saas-job
-        image: alpine:3.6
-        resources:
-          {}
-          
-      restartPolicy: OnFailure
-
----
-# Source: ambassador-jwt-auth/charts/saas-web/templates/horizontalpodautoscaler.yaml
-
-
----
-# Source: ambassador-jwt-auth/charts/saas-web/templates/ingress.yaml
-
-
----
-# Source: ambassador-jwt-auth/charts/saas-web/templates/persistentvolumeclaim.yaml
-
-
-
----
-# Source: ambassador-jwt-auth/charts/saas-web/templates/service-headless.yaml
-
-
----
-# Source: ambassador-jwt-auth/charts/saas-web/templates/servicemonitor.yaml
-
-
----
-# Source: ambassador-jwt-auth/charts/saas-web/templates/verticalpodautoscaler.yaml
-
 
