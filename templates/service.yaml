@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "ambassador-jwt-auth.fullname" . }}
+  name: {{ template "ambassador-auth-jwt.fullname" . }}
   labels:
-    app: {{ template "ambassador-jwt-auth.name" . }}
-    chart: {{ template "ambassador-jwt-auth.chart" . }}
+    app: {{ template "ambassador-auth-jwt.name" . }}
+    chart: {{ template "ambassador-auth-jwt.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- range $key, $value := .Values.service.labels }}
@@ -17,7 +17,7 @@ metadata:
         apiVersion: ambassador/v1
         kind: AuthService
         name: authentication
-        auth_service: {{ template "ambassador-jwt-auth.fullname" . }}
+        auth_service: {{ template "ambassador-auth-jwt.fullname" . }}
         {{- range $key, $value := .Values.service.config }}
         {{ $key }}: {{ $value }}
         {{- end }}
@@ -28,7 +28,7 @@ spec:
     targetPort: 3000
     protocol: TCP
   selector:
-    app: {{ template "ambassador-jwt-auth.name" . }}
+    app: {{ template "ambassador-auth-jwt.name" . }}
     release: {{ .Release.Name }}
     {{- if or .Values.blueGreen }}
     bluegreen: {{ required "activeBlueGreen required when using blue/green labels" .Values.activeBlueGreen }}

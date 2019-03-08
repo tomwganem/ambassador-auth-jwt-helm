@@ -6,7 +6,7 @@ labels: {}
 replicaCount: 1
 
 image:
-  repository: tomwganem/ambassador-jwt-auth
+  repository: tomwganem/ambassador-auth-jwt
   tag: '0.2.0'
   pullPolicy: IfNotPresent
   # pullSecret:

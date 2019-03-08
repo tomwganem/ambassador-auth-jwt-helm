@@ -2,10 +2,10 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "ambassador-jwt-auth.fullname" . }}
+  name: {{ template "ambassador-auth-jwt.fullname" . }}
   labels:
-    app: {{ template "ambassador-jwt-auth.name" . }}
-    chart: {{ template "ambassador-jwt-auth.chart" . }}
+    app: {{ template "ambassador-auth-jwt.name" . }}
+    chart: {{ template "ambassador-auth-jwt.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     {{- range $k, $v := .Values.labels }}
@@ -15,12 +15,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "ambassador-jwt-auth.name" . }}
+      app: {{ template "ambassador-auth-jwt.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "ambassador-jwt-auth.name" . }}
+        app: {{ template "ambassador-auth-jwt.name" . }}
         release: {{ .Release.Name }}
         {{- if or .Values.blueGreen }}
         blueGreen: {{ .Values.blueGreen }}
@@ -35,7 +35,7 @@ spec:
           protocol: TCP
         envFrom:
         - configMapRef:
-            name: {{ template "ambassador-jwt-auth.fullname" . }}
+            name: {{ template "ambassador-auth-jwt.fullname" . }}
         livenessProbe:
           tcpSocket:
             port: 3000
