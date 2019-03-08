@@ -1,0 +1,158 @@
+---
+# Source: ambassador-jwt-auth/templates/configmap.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  metadata:
+  name: ambassador-jwt-auth
+  labels:
+    app: ambassador-jwt-auth
+    chart: ambassador-jwt-auth-0.1.0
+    release: RELEASE-NAME
+    heritage: Tiller
+data:
+  SENTRY_CURRENT_ENV: "dev"
+  SENTRY_DSN: ""
+  JWT_ISSUER: ""
+  JWT_OUTBOUND_HEADER: "session_token"
+  CHECK_EXP: "true"
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: RELEASE-NAME-ambassador-jwt-auth
+  labels:
+    app: ambassador-jwt-auth
+    chart: saas-web-2.1.0
+    release: RELEASE-NAME
+    heritage: Tiller
+  annotations:
+    getambassador.io/config: "---\napiVersion: ambassador/v1\nkind: AuthService\nname: authentication\nauth_service: \"ambassador-jwt-auth\"\npath_prefix:  \"/auth\"\nproto: http\nallow_request_body: false\n"
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 3000
+    
+  selector:
+    app: ambassador-jwt-auth
+    release: RELEASE-NAME
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/deployment.yaml
+
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: RELEASE-NAME-ambassador-jwt-auth
+  labels:
+    app: ambassador-jwt-auth
+    chart: saas-web-2.1.0
+    release: RELEASE-NAME
+    heritage: Tiller
+    "app": "ambassador-jwt-auth"
+    "feature": "ambassador"
+    "tier": "infra"
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: ambassador-jwt-auth
+      release: RELEASE-NAME
+  template:
+    metadata:
+      labels:
+        app: ambassador-jwt-auth
+        release: RELEASE-NAME
+    spec:
+      containers:
+      - name: RELEASE-NAME
+        image: "ahab.asperasoft.com/opensource/ambassador-jwt-auth:qa-latest"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: 3000-tcp
+          containerPort: 3000
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: ambassador-jwt-auth
+        livenessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 3
+          
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 15
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 3
+          
+        resources:
+          {}
+          
+      imagePullSecrets:
+      - name: ahab.asperasoft.com
+
+---
+# Source: ambassador-jwt-auth/charts/saas-job/templates/job.yaml
+
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: saas-job-59ruo
+  labels:
+    app: saas-job
+    chart: saas-job-1.0.0
+    release: RELEASE-NAME
+    heritage: Tiller
+spec:
+  template:
+    metadata:
+      labels:
+        app: saas-job
+        release: RELEASE-NAME
+    spec:
+      containers:
+      - name: saas-job
+        image: alpine:3.6
+        resources:
+          {}
+          
+      restartPolicy: OnFailure
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/horizontalpodautoscaler.yaml
+
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/ingress.yaml
+
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/persistentvolumeclaim.yaml
+
+
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/service-headless.yaml
+
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/servicemonitor.yaml
+
+
+---
+# Source: ambassador-jwt-auth/charts/saas-web/templates/verticalpodautoscaler.yaml
+
+

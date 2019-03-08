@@ -1,9 +1,10 @@
 #
 # Helm ambassador-jwt-auth saas-web deployment values
 #
----
+name: &name ambassador-jwt-auth
+
 saas-web:
-  name: &name ambassador-jwt-auth
+  name: *name
 
   labels:
     tier: infra
@@ -18,17 +19,8 @@ saas-web:
     pullPolicy: IfNotPresent
     pullSecret: ahab.asperasoft.com
 
-  configEnv:
-    SENTRY_CURRENT_ENV:
-      sentry-config: current_environment
-    SENTRY_DSN:
-      sentry-config: *name
-
   configRef:
-    - ambassador-jwt-auth-env
-
-  configVar:
-    SENTRY_RELEASE: *tag
+    - *name
 
   ports:
     - containerPort: &port 3000
@@ -60,3 +52,12 @@ saas-web:
         path_prefix:  "/auth"
         proto: http
         allow_request_body: false
+
+sentry:
+  environment: 'dev'
+  dsn: ''
+
+jwt:
+  issuer: ''
+  outbound_header: session_token
+  check_exp: true
