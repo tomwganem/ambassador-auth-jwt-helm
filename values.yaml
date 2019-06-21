@@ -28,6 +28,7 @@ jwt:
   issuer: ''
   outbound_header: x-session-token
   check_exp: true
+  allowBasicAuthPassthrough: false
 
 resources: {}
 nodeSelector: {}
