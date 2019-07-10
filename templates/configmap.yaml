@@ -22,3 +22,6 @@ data:
   {{- if .Values.jwt.allowBasicAuthPathRegex }}
   ALLOW_BASIC_AUTH_PATH_REGEX: {{ .Values.jwt.allowBasicAuthPathRegex | quote }}
   {{- end }}
+  {{- if .Values.jwt.newErrorMessageRegex }}
+  NEW_ERROR_MESSAGE_REGEX: {{ .Values.jwt.newErrorMessageRegex | quote }}
+  {{- end }}

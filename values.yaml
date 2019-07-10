@@ -31,6 +31,7 @@ jwt:
   allowBasicAuthPassthrough: false
   # allowBasicAuthHeader: 'Authorization'
   # allowBasicAuthPathRegex: ''
+  # newErrorMessageRegex: ''
 
 resources: {}
 nodeSelector: {}
