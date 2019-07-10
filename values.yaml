@@ -29,6 +29,8 @@ jwt:
   outboundHeader: x-session-token
   checkExp: true
   allowBasicAuthPassthrough: false
+  # allowBasicAuthHeader: 'Authorization'
+  # allowBasicAuthPathRegex: ''
 
 resources: {}
 nodeSelector: {}
