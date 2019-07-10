@@ -13,6 +13,6 @@ data:
   SENTRY_CURRENT_ENV: {{ .Values.sentry.environment | quote}}
   SENTRY_DSN: {{ .Values.sentry.dsn | quote }}
   JWT_ISSUER: {{ .Values.jwt.issuer | quote }}
-  JWT_OUTBOUND_HEADER: {{ .Values.jwt.outbound_header | quote }}
-  CHECK_EXP: {{ .Values.jwt.check_exp | quote}}
+  JWT_OUTBOUND_HEADER: {{ .Values.jwt.outboundHeader | quote }}
+  CHECK_EXP: {{ .Values.jwt.checkExp | quote}}
   ALLOW_BASIC_AUTH_PASSTHROUGH: {{ .Values.jwt.allowBasicAuthPassthrough | quote}}
