@@ -16,8 +16,8 @@ data:
   JWT_OUTBOUND_HEADER: {{ .Values.jwt.outboundHeader | quote }}
   CHECK_EXP: {{ .Values.jwt.checkExp | quote}}
   ALLOW_BASIC_AUTH_PASSTHROUGH: {{ .Values.jwt.allowBasicAuthPassthrough | quote}}
-  {{- if .Values.jwt.allowBasicAuthHeader }}
-  ALLOW_BASIC_AUTH_HEADER: {{ .Values.jwt.allowBasicAuthHeader | quote }}
+  {{- if .Values.jwt.allowBasicAuthHeaders }}
+  ALLOW_BASIC_AUTH_HEADERS: {{ .Values.jwt.allowBasicAuthHeaders | quote }}
   {{- end }}
   {{- if .Values.jwt.allowBasicAuthPathRegex }}
   ALLOW_BASIC_AUTH_PATH_REGEX: {{ .Values.jwt.allowBasicAuthPathRegex | quote }}

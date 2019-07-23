@@ -29,7 +29,7 @@ jwt:
   outboundHeader: x-session-token
   checkExp: true
   allowBasicAuthPassthrough: false
-  # allowBasicAuthHeader: 'Authorization'
+  # allowBasicAuthHeaders: 'Authorization'
   # allowBasicAuthPathRegex: ''
   # newErrorMessageRegex: ''
 
